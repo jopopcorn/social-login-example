@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">LoginExample</string>
+    <string name="google_user_name">Name: %s</string>
+    <string name="google_user_email">Email: %s</string>
+    <string name="logout">Log Out</string>
+    <string name="naver_client_id">NAVER_CLIENT_ID</string>
+    <string name="naver_client_secret">NAVER_CLIENT_SECRET</string>
+</resources>
