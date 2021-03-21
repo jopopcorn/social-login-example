@@ -24,6 +24,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import java.lang.ref.WeakReference
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
     companion object {
@@ -38,21 +39,20 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var retrofit: Retrofit
     private lateinit var naverAPI: NaverAPI
 
-    private val mOAuthLoginHandler: OAuthLoginHandler by lazy {
-        @SuppressLint("HandlerLeak")
-        object : OAuthLoginHandler() {
-            override fun run(success: Boolean) {
-                if (success) {
-                    getNaverUserInfo(naverLoginModule.getAccessToken(applicationContext))
-                } else {
-                    val errorCode = naverLoginModule.getLastErrorCode(this@LoginActivity).code
-                    val errorDesc = naverLoginModule.getLastErrorDesc(this@LoginActivity)
-                    Toast.makeText(
-                        this@LoginActivity,
-                        "error code: $errorCode, error description: $errorDesc",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
+    private class NaverLoginHandler(context: LoginActivity): OAuthLoginHandler(){
+        private val activityReference: WeakReference<LoginActivity> = WeakReference(context)
+        private val activity = activityReference.get()
+        override fun run(success: Boolean) {
+            if (success) {
+                activity?.getNaverUserInfo(OAuthLogin.getInstance().getAccessToken(activity.applicationContext))
+            } else {
+                val errorCode = OAuthLogin.getInstance().getLastErrorCode(activity).code
+                val errorDesc = OAuthLogin.getInstance().getLastErrorDesc(activity)
+                Toast.makeText(
+                    activity,
+                    "error code: $errorCode, error description: $errorDesc",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -86,7 +86,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun initView() {
-        binding.signInNaverBtn.setOAuthLoginHandler(mOAuthLoginHandler)
+        binding.signInNaverBtn.setOAuthLoginHandler(NaverLoginHandler(this))
         binding.signInNaverBtn.setOnClickListener(this)
         binding.signInGoogleBtn.setOnClickListener(this)
     }
@@ -156,7 +156,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun signInNaver() {
-        naverLoginModule.startOauthLoginActivity(this, mOAuthLoginHandler)
+        naverLoginModule.startOauthLoginActivity(this, NaverLoginHandler(this))
     }
 
     private fun signInGoogle() {

@@ -1,14 +1,17 @@
 package com.example.loginexample
 
-import com.google.gson.annotations.SerializedName
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Result(
-    @SerializedName("resultcode") val resultcode: String,
-    @SerializedName("message") val message: String,
-    @SerializedName("response") val response: NaverUser
-)
+    val resultcode: String,
+    val message: String,
+    val response: NaverUser
+) : Parcelable
 
+@Parcelize
 data class NaverUser(
-    @SerializedName("id") val id: String,
-    @SerializedName("email") val email: String
-)
+    val id: String,
+    val email: String
+) : Parcelable
