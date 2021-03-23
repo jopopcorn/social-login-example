@@ -1,6 +1,5 @@
 package com.example.loginexample
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -39,12 +38,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     private lateinit var retrofit: Retrofit
     private lateinit var naverAPI: NaverAPI
 
-    private class NaverLoginHandler(context: LoginActivity): OAuthLoginHandler(){
+    private class NaverLoginHandler(context: LoginActivity) : OAuthLoginHandler() {
         private val activityReference: WeakReference<LoginActivity> = WeakReference(context)
         private val activity = activityReference.get()
         override fun run(success: Boolean) {
             if (success) {
-                activity?.getNaverUserInfo(OAuthLogin.getInstance().getAccessToken(activity.applicationContext))
+                activity?.getNaverUserInfo(OAuthLogin.getInstance()
+                    .getAccessToken(activity.applicationContext))
             } else {
                 val errorCode = OAuthLogin.getInstance().getLastErrorCode(activity).code
                 val errorDesc = OAuthLogin.getInstance().getLastErrorDesc(activity)
@@ -108,7 +108,11 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 finish()
             }
             hasNaverSession() -> {
-                getNaverUserInfo(naverLoginModule.getAccessToken(applicationContext))
+                if (naverLoginModule.getAccessToken(this) == null) {
+                    getNaverUserInfo(naverLoginModule.getRefreshToken(this))
+                }else{
+                    getNaverUserInfo(naverLoginModule.getAccessToken(this))
+                }
             }
         }
     }
@@ -129,7 +133,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         return true
     }
 
-    private fun getNaverUserInfo(accessToken: String){
+    private fun getNaverUserInfo(accessToken: String) {
         naverAPI.getUserInfo("Bearer $accessToken").enqueue(object : Callback<Result> {
             override fun onResponse(call: Call<Result>, response: Response<Result>) {
                 if (response.isSuccessful && response.body() != null) {
