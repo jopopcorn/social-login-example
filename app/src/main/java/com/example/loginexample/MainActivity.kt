@@ -21,12 +21,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun initView() {
         binding.userEmailText.text = intent.extras?.get("email").toString()
         binding.logoutBtn.setOnClickListener(this)
+        binding.withdrawBtn.setOnClickListener(this)
     }
 
     fun directToLoginActivity(result: Boolean) {
         intent = Intent(this@MainActivity, LoginActivity::class.java)
         if (result) {
-            Toast.makeText(applicationContext, "로그아웃", Toast.LENGTH_SHORT).show()
             startActivity(intent)
             finish()
         } else {
@@ -36,7 +36,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.logout_btn -> SocialAuthHelper().logout(applicationContext, this@MainActivity)
+            R.id.logout_btn -> SocialAuthHelper().logout(applicationContext, this)
+            R.id.withdraw_btn -> SocialAuthHelper().withdraw(applicationContext, this)
         }
     }
 

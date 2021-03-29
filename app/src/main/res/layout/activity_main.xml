@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:text="user email"
         android:textSize="18sp"
-        android:layout_marginBottom="10dp"
         app:layout_constraintBottom_toTopOf="@+id/logout_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -25,8 +24,23 @@
         android:text="로그아웃"
         android:textColor="@android:color/black"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/withdraw_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/withdraw_btn"
+        android:layout_width="230dp"
+        android:layout_height="50dp"
+        android:backgroundTint="@android:color/white"
+        android:text="회원 탈퇴"
+        android:textColor="@android:color/black"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/logout_btn" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
